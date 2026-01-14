@@ -1,0 +1,158 @@
+Hybrid Playwright framework:
+•	Playwright Test Runner
+•	Cucumber BDD
+•	POM with proper OOPS
+•	Data-driven
+•	Fixtures + modular helpers
+•	Thin root config (Option-1)
+•	Target app: Zero Bank (zero.webappsecurity.com)
+•	Pages covered: Home, Login, Feedback
+No shortcuts, no pseudo-code, no missing references.
+________________________________________
+1. FOLDER STRUCTURE 
+playwright-zero-bank/
+│
+├── playwright.config.ts        ← THIN ROOT CONFIG (MANDATORY)
+│
+└── tests/
+    ├── base/
+    │   ├── test-base.ts
+    │   ├── playwright.setup.ts
+    │   ├── hooks.ts
+    │   └── wait-utils.ts
+    │
+    ├── config/
+    │   ├── env.config.ts
+    │   ├── playwright.config.ts
+    │   ├── cucumber.config.js
+    │   └── test-env.json
+    │
+    ├── pages/
+    │   ├── BasePage.ts
+    │   ├── HomePage.ts
+    │   ├── LoginPage.ts
+    │   └── FeedbackPage.ts
+    │
+    ├── testdata/
+    │   ├── loginData.json
+    │   └── testDataHelper.ts
+    │
+    ├── features/
+    │   ├── home.feature
+    │   ├── login.feature
+    │   └── feedback.feature
+    │
+    ├── steps/
+    │   ├── home.steps.ts
+    │   ├── login.steps.ts
+    │   └── feedback.steps.ts
+    │
+    ├── utils/
+    │   ├── logger.ts
+    │   └── screenshot.util.ts
+    │
+    └── test-results/
+        ├── reports/
+        ├── screenshots/
+        └── traces/
+________________________________________
+2. ROOT playwright.config.ts (THIN CONFIG – FINAL)
+This is non-negotiable.
+import config from './tests/config/playwright.config';
+export default config;
+No logic here. Just delegation.
+________________________________________
+3. REAL CONFIG – 
+tests/config/playwright.config.ts
+________________________________________
+4. ENV CONFIG – 
+tests/config/test-env.json
+________________________________________
+5. ENV READER – 
+tests/config/env.config.ts
+________________________________________
+6. BASE PAGE (OOPS CORE)
+tests/pages/BasePage.ts
+________________________________________
+7. PAGE OBJECTS 
+Home Page – tests/pages/HomePage.ts
+Login Page – tests/pages/LoginPage.ts
+Feedback Page – tests/pages/FeedbackPage.ts
+________________________________________
+8. TEST DATA
+tests/testdata/loginData.json
+________________________________________
+tests/testdata/testDataHelper.ts
+________________________________________
+9. BDD FEATURES
+tests/features/login.feature
+tests/features/feedback.feature
+ests/features/home.feature
+________________________________________
+10. STEP DEFINITIONS 
+tests/steps/login.steps.ts
+tests/steps/feedback.steps.ts
+________________________________________
+11. WHY THIS FRAMEWORK IS “BEST-IN-CLASS”
+•	Clean OOPS-based POM
+•	Proper BDD separation
+•	Data is externalized
+•	Config is governed
+•	Thin root config ensures Playwright compatibility
+•	Easily extendable to API, mobile, CI/CD
+This is a framework you can defend in an architecture review.
+________________________________________
+Run Tests in a Specific Browser (Single Browser)
+Your framework is ENV-driven, so the browser is selected via the BROWSER environment variable.
+▶ Chromium
+BROWSER=chromium npx cucumber-js
+▶ Firefox
+BROWSER=firefox npx cucumber-js
+▶ WebKit
+BROWSER=webkit npx cucumber-js
+▶ Headed Mode (Debug-friendly)
+BROWSER=chromium npx cucumber-js
+(Headless/Headed is controlled via Playwright config or launch options.)
+________________________________________
+Run Tests in Parallel (Same Browser)
+Cucumber supports parallel execution via --parallel.
+▶ Example: 4 parallel workers in Chromium
+BROWSER=chromium npx cucumber-js --parallel 4
+What happens:
+•	One browser instance per worker
+•	Isolated contexts
+•	Thread-safe execution
+________________________________________
+Run Tests in Parallel Across ALL Browsers (The Truth)
+⚠ This is NOT natively supported by Cucumber in a single command.
+Cucumber:
+•	Does not understand Playwright projects
+•	Cannot fan out browsers automatically
+So the correct enterprise solution is multi-command orchestration.
+________________________________________
+Correct Way: Parallel Browsers via NPM Scripts
+package.json
+{
+  "scripts": {
+    "test:chromium": "BROWSER=chromium npx cucumber-js --parallel 4",
+    "test:firefox": "BROWSER=firefox npx cucumber-js --parallel 4",
+    "test:webkit": "BROWSER=webkit npx cucumber-js --parallel 4",
+    "test:all": "npm-run-all --parallel test:chromium test:firefox test:webkit"
+  }
+}
+▶ Run all browsers in parallel
+npm run test:all
+Each browser:
+•	Runs independently
+•	Uses its own workers
+•	Produces its own screenshots/videos
+This is how real CI pipelines do it.
+________________________________________
+CI-Grade Alternative (Matrix Strategy)
+If you are in GitHub Actions, Azure DevOps, Jenkins, etc.:
+•	Define a browser matrix
+•	Run one browser per job
+•	Fastest and cleanest approach
+Example (conceptual):
+browser: [chromium, firefox, webkit]
+________________________________________
