@@ -1,0 +1,27 @@
+{
+  "name": "framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+   "test:chromium": "cross-env BROWSER=chromium npx cucumber-js --require-module ts-node/register/transpile-only --require tests/steps/common.steps.ts --require tests/steps/home.steps.ts --require tests/steps/login.steps.ts --require tests/steps/feedback.steps.ts --parallel 4 tests/features",
+   "test:firefox": "cross-env BROWSER=firefox npx cucumber-js --require-module ts-node/register/transpile-only --require tests/steps/common.steps.ts --require tests/steps/home.steps.ts --require tests/steps/login.steps.ts --require tests/steps/feedback.steps.ts --parallel 4 tests/features",
+   "test:webkit": "cross-env BROWSER=webkit npx cucumber-js --require-module ts-node/register/transpile-only --require tests/steps/common.steps.ts --require tests/steps/home.steps.ts --require tests/steps/login.steps.ts --require tests/steps/feedback.steps.ts --parallel 4 tests/features",
+   "test:all": "npx npm-run-all --parallel test:chromium test:firefox test:webkit"
+  },
+  "keywords": [],
+  "author": "Shreyata Sugandhi",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.8",
+    "cross-env": "^10.1.0",
+    "npm-run-all": "^4.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^12.5.0"
+  }
+}
